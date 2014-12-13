@@ -90,4 +90,4 @@ class Translator(webapp2.RequestHandler):
 application = webapp2.WSGIApplication([
     ('/', MainPage),
     ('/translate', Translator),
-],debug=True)
+],debug=False)
