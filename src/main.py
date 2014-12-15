@@ -13,10 +13,8 @@ import urllib
 import urllib2
 import webapp2
 import HTMLParser
-import lib.goslate as goslate
 
-from operator import itemgetter
-from collections import OrderedDict
+from lib.microsofttranslator import Translator as MicrosoftTranslator
 
 JINJA_ENVIRONMENT = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.abspath(
@@ -24,11 +22,28 @@ JINJA_ENVIRONMENT = jinja2.Environment(
     extensions=['jinja2.ext.autoescape'],
     autoescape=True)
 
+client_id = 'client_id'
+client_secret = 'client_secret'
+
+
+"""Get Client ID and Client Secret
 """
-Handle the main page requests - /
+
+class CredentialsPage(webapp2.RequestHandler):
+
+    def __init__(self, request, response):
+        self.initialize(request, response)
+
+    def get(self):
+        template = JINJA_ENVIRONMENT.get_template('static/index.html')
+        template_values = {}
+        self.response.write(template.render(template_values))
+
+
+"""Handle the main page requests - /
 __init__:
     Initialize a goslate object to retrieve the language list.
-get:
+post:
     Populate the select list with the retrieved languages.
 """
 
@@ -36,19 +51,25 @@ class MainPage(webapp2.RequestHandler):
 
     def __init__(self, request, response):
         self.initialize(request, response)
-        self.gs = goslate.Goslate()
 
-    def get(self):
-        languages = self.gs.get_languages()
-        languages = OrderedDict(sorted(languages.items(), key = itemgetter(1)))
+    def post(self):
+        global client_id
+        client_id = cgi.escape(self.request.get('client_id'))
+        global client_secret
+        client_secret = cgi.escape(self.request.get('client_secret'))
+        microsofttranslator = MicrosoftTranslator(client_id, client_secret)
+        if microsofttranslator.get_access_token() == 400:
+            self.response.write('Invalid Client ID or Client Secret, go <a href="http://android-app-translation.appspot.com">back</a> and try again.')
+            return
+        languages = microsofttranslator.get_languages()
+        languages.sort()
         template_values = {
             'languages': languages
         }
-        template = JINJA_ENVIRONMENT.get_template('static/index.html')
+        template = JINJA_ENVIRONMENT.get_template('static/main.html')
         self.response.write(template.render(template_values))
 
-"""
-Handle the translate page requests - /translate
+"""Handle the translate page requests - /translate
 """
 
 class Translator(webapp2.RequestHandler):
@@ -62,19 +83,22 @@ class Translator(webapp2.RequestHandler):
         self.storelisting = False
 
     def post(self):
-        stringsxml = cgi.escape(self.request.get('stringsxml'))
+        strings_xml = cgi.escape(self.request.get('strings_xml'))
         self.to_lang = cgi.escape(self.request.get('languages'))
-        if 'store-listing' in self.request.POST:
+        if 'store_listing' in self.request.POST:
             self.storelisting = True
-        translator = Translate(stringsxml, self.storelisting, self.to_lang)
+        translator = Translate(strings_xml, self.storelisting, self.to_lang)
         two_tuple = translator.translate()
+        if two_tuple[0] == 'error':
+            self.response.write('Session has expired, go back to the <a href="http://android-app-translation.appspot.com">main page</a> and enter your credentials again.')
+            return
         self.translated = two_tuple[0]
         self.from_lang = two_tuple[1]
         template_values = {
-            'stringsxml': HTMLParser.HTMLParser().unescape(stringsxml),
-            'newstringsxml': HTMLParser.HTMLParser().unescape(self.translated).decode('utf-8'),
-            'originallanguage': 'values-' + self.from_lang + '/strings.xml',
-            'translatedlanguage': 'values-' + self.to_lang + '/strings.xml'
+            'strings_xml': HTMLParser.HTMLParser().unescape(strings_xml),
+            'new_strings_xml': HTMLParser.HTMLParser().unescape(self.translated).decode('utf-8'),
+            'original_language': 'values-' + self.from_lang + '/strings.xml',
+            'translated_language': 'values-' + self.to_lang + '/strings.xml'
         }
         template = JINJA_ENVIRONMENT.get_template('static/translate.html')
         self.response.write(template.render(template_values))
@@ -84,7 +108,7 @@ class Translate(object):
 
     """
     @params
-    stringsxml: The strings.xml file's contents
+    strings_xml: The strings.xml file's contents
     store_listing: Check if the translation is for Store Listing or strings.xml
                    If it is for Store Listing, do not escape single quotes.
     to_lang: The language to be converted to.
@@ -95,9 +119,9 @@ class Translate(object):
     pattern_4: This is an example
     pattern_5: <!--exclude-->
     """
-    def __init__(self, stringsxml, store_listing = False, to_lang = None):
-        self.gs = goslate.Goslate()
-        self.stringsxml = stringsxml
+    def __init__(self, strings_xml, store_listing = False, to_lang = None):
+        self.microsofttranslator = MicrosoftTranslator(client_id, client_secret)
+        self.strings_xml = strings_xml
         self.to_lang = to_lang
         self.from_lang = None
         self.store_listing = store_listing
@@ -109,11 +133,10 @@ class Translate(object):
         self.pattern_4 = '(.*|\\s*)'
         self.exclude_pattern = '&lt;!--\s*exclude\s*--&gt;'
 
-    """
-    The substitutions are done in order to preserve the '\n' or newline character which appears in strings.xml
+    """    The substitutions are done in order to preserve the '\n' or newline character which appears in strings.xml
     """
     def parse_strings_xml(self):
-        strings = self.stringsxml
+        strings = self.strings_xml
         strings = re.sub('<', '&lt;', strings)
         strings = re.sub('>', '&gt;', strings)
         strings = re.sub(r'\n', '\r\n', strings) #replace newline with CR, LF
@@ -121,8 +144,7 @@ class Translate(object):
         strings = re.sub(r'\\n', '(...)', strings) #replace actual character "\n" to be used in the application
         self.strings = strings.split('(..)') #split it according to the new CR, LF
 
-    """
-    Create a list of strings to be translated
+    """    Create a list of strings to be translated
     """
     def get_strings_to_translate(self):
         translate_this = []
@@ -130,8 +152,7 @@ class Translate(object):
             translate_this.append(self.detect_pattern_type(self.strings[i]))
         return translate_this
 
-    """
-    Detect the pattern of string and split it into the beginning, translate_this and end.
+    """    Detect the pattern of string and split it into the beginning, translate_this and end.
     <string name="example"> --> beginning
     This is an example      --> translate_this
     </string>               --> end
@@ -170,8 +191,7 @@ class Translate(object):
         else:
             return translate_this
 
-    """
-    Detect the from_lang
+    """    Detect the from_lang
     Use goslate's translate array to exploit goslate's threading translation
     Detect pattern with tags enabled this time, to retrieve only the tags
     Replace translate_this with the translated text
@@ -182,15 +202,19 @@ class Translate(object):
     def translate(self):
         self.parse_strings_xml()
         translate_this = self.get_strings_to_translate()
-        self.from_lang = self.gs.detect(translate_this[0])
+        self.from_lang = self.microsofttranslator.detect_language(translate_this[0])
+        output = self.microsofttranslator.translate_array(translate_this, self.to_lang)
         translated = []
-        newstrings = []
-        for i in self.gs.translate(translate_this, self.to_lang):
-            translated.append(i)
+        try:
+            for entry in output:
+                translated.append(entry['TranslatedText'])
+        except TypeError:
+            return ['error', 'Session Expired']
+        new_strings = []
         for i in range(len(self.strings)):
             match = re.search(self.exclude_pattern, self.strings[i])
             if match:
-                newstrings.append(self.strings[i])
+                new_strings.append(self.strings[i])
             else:
                 stringxmltuple = self.detect_pattern_type(self.strings[i], get_tags = True)
                 beginning = stringxmltuple[0]
@@ -201,16 +225,17 @@ class Translate(object):
                 newstring = re.sub(self.pattern_2, replacement, self.strings[i])
                 newstring = re.sub(self.pattern_3, replacement, self.strings[i])
                 newstring = re.sub(self.pattern_4, replacement, self.strings[i])
-                newstrings.append(newstring)
-        newstringsxml = '\n'.join(newstrings).encode('utf-8')
-        newstringsxml = re.sub('&lt;', '<', newstringsxml)
-        newstringsxml = re.sub('&gt;', '>', newstringsxml)
-        newstringsxml = re.sub(r'\(\.\.\.\)', r'\\n', newstringsxml)
+                new_strings.append(newstring)
+        new_strings_xml = '\n'.join(new_strings).encode('utf-8')
+        new_strings_xml = re.sub('&lt;', '<', new_strings_xml)
+        new_strings_xml = re.sub('&gt;', '>', new_strings_xml)
+        new_strings_xml = re.sub(r'\(\.\.\.\)', r'\\n', new_strings_xml)
         if not self.store_listing:
-                newstringsxml = re.sub(r"'", r"\'", newstringsxml)
-        return [newstringsxml, self.from_lang]
+                new_strings_xml = re.sub(r"'", r"\'", new_strings_xml)
+        return [new_strings_xml, self.from_lang]
 
 application = webapp2.WSGIApplication([
-    ('/', MainPage),
+    ('/', CredentialsPage),
+    ('/main', MainPage),
     ('/translate', Translator),
 ],debug=False)

@@ -22,6 +22,20 @@ You can use the application here - [android-app-translation](http://android-app-
         To: German
         <string name="monday"><!--exclude-->Monday</string>
 
+3. If the value of a particular element is split across many lines and you want to exclude it from translation, please add <!--exclude--> for every line.
+		From: English
+		<string name="example">This
+			Is
+			A
+			Multiline
+			Element </string>
+		<string name="example">This <!--exclude-->
+			Is <!--exclude-->
+			<!--exclude-->A
+			Multiline<!--exclude>
+			Element </string>
+	In this case every word is ignored for translation except `Element`.
+
 
 #####Things that need to be fixed/built
 1. A more fluid, sleek UI
@@ -30,7 +44,7 @@ You can use the application here - [android-app-translation](http://android-app-
 
 #####Contributions
 
-If you'd like to contribute to the project, feel free to fork the project make your changes and commit it to a separate branch and then perform a pull request.
+If you'd like to contribute to the project, feel free to fork the project make your changes, commit them to a separate branch and then perform a pull request.
 
 #####Licensing
 The project is licensed under the MIT License.

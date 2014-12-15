@@ -52,3 +52,9 @@ docs/_build/
 
 # PyBuilder
 target/
+
+# lib test files
+lib/test.py
+
+# Misc files
+pw.txt

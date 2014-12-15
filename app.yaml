@@ -9,6 +9,9 @@ handlers:
 - url: /
   script: src.main.application
 
+- url: /main
+  script: src.main.application
+
 - url: /translate
   script: src.main.application
 

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+{% autoescape true %}
+<html>
+  <!-- [START head_html] -->
+  <head>
+    <meta charset="utf-8">
+    <meta name="description" content="Android Application Translation | torcellite">
+    <script type="text/javascript">
+      function toggleTutorial() {
+        if(document.getElementById("tutorial-content").style.display == 'none') {
+          document.getElementById("tutorial-content").style.display = 'block'
+          document.getElementById("toggle").innerHTML = 'Hide';
+        } else {
+          document.getElementById("tutorial-content").style.display = 'none'
+          document.getElementById("toggle").innerHTML = 'Show Tutorial';
+        }
+      }
+    </script>
+    <link type="text/css" rel="stylesheet" href="/css/template.css"/>
+    <title>Android App Translation</title>
+  </head>
+  <!-- [END head_html] -->
+  <body>
+    <a href="https://github.com/torcellite/Android-Application-Translation"><img style="position: absolute; top: 0; right: 0; border: 0; z-index: 5;" src="https://camo.githubusercontent.com/e7bbb0521b397edbd5fe43e7f760759336b5e05f/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677265656e5f3030373230302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png"></a>
+    <div class="header">
+      <span class="title"><a href="/" style="text-decoration: none;">Android Application Translate</a></span>
+    </div>
+    <div class="content">
+    <div style="text-align: center;">
+      <button class="button" id="toggle" onclick="toggleTutorial();" style="
+        display: inline-block; margin: 8px;">Show Tutorial</button>
+    </div>
+    <div class="tutorial" style="margin-left:10%; margin-right:10%; margin-bottom: 0px;">
+      <div id="tutorial-content" style="display: none;">
+        <h3 style="margin-left: 24px;">Tutorial</h3>
+        <ol style="margin:0;">
+          <li>
+            <pre>The tool is only an automated version of looking up strings on Google Translate.</pre>
+          </li>
+          <li>
+            <pre>It has been modified specifically to translate strings.xml in Android applications.</pre>
+          </li>
+          <li>
+            <pre>To exclude the strings or items that you do not want to be translated include the &lt;!-- exclude --&gt; either inbetween the tags.
+            For example,
+            &lt;string name='app_name'&gt;Name of the application&lt;/string&gt;
+            will be changed to
+            &lt;string name='app_name'&gt;&lt;!-- exclude --&gt;Name of the application&lt;/string&gt;
+            the translator will ignore this string for translation.</pre>
+          </li>
+          <li>
+            <pre>Check Store Listing if you'd like to translate text for the Google Play Store. Encode it in a regular xml file and the application will translate it for you without escaping apostrophes.</pre>
+          </li>
+        </ol>
+        <br/> <br/>
+      </div>
+    </div>
+    <form action="/translate" method="post">
+      <div style="width:80%; margin-left:10%; margin-right:10%;">
+        <div><textarea name="strings_xml" rows="30" style="width:100%"></textarea></div>
+        <hr/>
+        <div style="float:right; position:relative;">
+          <div>
+            <input type="checkbox" name="store_listing" value="Store Listing"> Store Listing <br/>
+            <select name="languages">
+              <option value="select">--Select Language--</option>
+              {% for lang in languages %}
+              <option value="{{lang}}">{{lang}}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div><input class="button" type="submit" value="Translate" style="float:right; position:relative; margin-top:8px;"></div>
+        </div>
+      </div>
+    </form>
+    <div class="footer">
+    <div>
+    <span>Licensed under the <a href="http://opensource.org/licenses/MIT" target="_blank">MIT license</a></span>
+    <div>
+    <div>
+    <span>Created by <a href="http://torcellite.com" target="_blank">torcellite</a></span>
+    <div>
+  </body>
+</html>
+{% endautoescape %}
