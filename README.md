@@ -16,9 +16,10 @@ You can use the application here - [android-app-translation](http://android-app-
         <item name="monday">Monday</item>
         To: German
         <string name="monday">Montag</string>
-                <item name="monday">Montag</item>
+        <item name="monday">Montag</item>
         
 2. Exclude certain XML elements
+
         From: English
         <string exclude="" name="monday">Monday</string>
         <item>Monday</item>
