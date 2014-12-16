@@ -30,35 +30,41 @@
       <button class="button" id="toggle" onclick="toggleTutorial();" style="
         display: inline-block; margin: 8px;">Show Tutorial</button>
     </div>
-    <div class="tutorial" style="margin-left:10%; margin-right:10%; margin-bottom: 0px;">
+    <div class="tutorial" style="margin-left:10%; margin-right:10%;">
       <div id="tutorial-content" style="display: none;">
         <h3 style="margin-left: 24px;">Tutorial</h3>
         <ol style="margin:0;">
           <li>
-            <pre>The tool is only an automated version of looking up strings on Google Translate.</pre>
+            <pre>The tool is only an automated version of looking up strings on Bing Translate.</pre>
           </li>
           <li>
             <pre>It has been modified specifically to translate strings.xml in Android applications.</pre>
           </li>
           <li>
-            <pre>To exclude the strings or items that you do not want to be translated include the &lt;!-- exclude --&gt; either inbetween the tags.
+            <pre>To exclude the strings or items that you do not want to be translated add the &quot;exclude&quot; attribute to the element.
             For example,
             &lt;string name='app_name'&gt;Name of the application&lt;/string&gt;
             will be changed to
-            &lt;string name='app_name'&gt;&lt;!-- exclude --&gt;Name of the application&lt;/string&gt;
-            the translator will ignore this string for translation.</pre>
+            &lt;string name='app_name' exclude='contents in here do not matter'&gt;Name of the application&lt;/string&gt;
+            The translator will ignore this string for translation.</pre>
           </li>
           <li>
-            <pre>Check Store Listing if you'd like to translate text for the Google Play Store. Encode it in a regular xml file and the application will translate it for you without escaping apostrophes.</pre>
+            <pre>If you have more tags like &quot;list-item&quot; add them in the extra tags field. If you do not have any or are unsure of what this means, please leave the field empty.</pre>
+          </li>
+          <li>
+            <pre>Check Store Listing if you'd like to translate text for the Google Play Store. Encode it in a regular xml file and the application will translate it for you without escaping single quotes.</pre>
           </li>
         </ol>
-        <br/> <br/>
       </div>
     </div>
     <form action="/translate" method="post">
       <div style="width:80%; margin-left:10%; margin-right:10%;">
         <div><textarea name="strings_xml" rows="30" style="width:100%"></textarea></div>
         <hr/>
+        <div style="float:left; position:relative;">
+            <pre>Extra tags to be included for translation separated by a comma(default: string, item):&nbsp;<input type="text" name="extra_tags" placeholder="string,item"> <br/>Leave the field blank if you're unsure </pre>
+            
+        </div>
         <div style="float:right; position:relative;">
           <div>
             <input type="checkbox" name="store_listing" value="Store Listing"> Store Listing <br/>

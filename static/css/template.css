@@ -99,7 +99,7 @@ pre {
         padding-bottom: 48px;
         overflow: auto;
 }
-.disclaimer {
+.disclaimer, .tutorial {
 		font-family: 'Roboto Condensed', sans-serif;
         font-weight: 300;
         padding-left: 8px;

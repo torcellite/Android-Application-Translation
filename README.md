@@ -12,39 +12,48 @@ You can use the application here - [android-app-translation](http://android-app-
 1. General translation
 
         From: English
-        <strings name="monday">Monday</string>
+        <string name="monday">Monday</string>
+        <item name="monday">Monday</item>
         To: German
-        <strings name="monday">Montag</string>
+        <string name="monday">Montag</string>
+                <item name="monday">Montag</item>
         
-2. Exclude certain strings
+2. Exclude certain XML elements
         From: English
-        <string name="monday"><!--exclude-->Monday</string>
+        <string exclude="" name="monday">Monday</string>
+        <item>Monday</item>
         To: German
-        <string name="monday"><!--exclude-->Monday</string>
+        <string exclude="" name="monday">Monday</string>
+        <item>Montag</item>
 
-3. If the value of a particular element is split across many lines and you want to exclude it from translation, please add <!--exclude--> for every line.
-		From: English
-		<string name="example">This
-			Is
-			A
-			Multiline
-			Element </string>
-		<string name="example">This <!--exclude-->
-			Is <!--exclude-->
-			<!--exclude-->A
-			Multiline<!--exclude>
-			Element </string>
-	In this case every word is ignored for translation except `Element`.
+3. Translate custom tags
 
+                From: English
+                <custom-tag name="monday">Monday</custom-tag>
+                <custom-tag exclude="">Monday</custom-tag>
+                To: German
+                <custom-tag name="monday">Monday</custom-tag>
+                <custom-tag exclude="">Montag</custom-tag>
+
+
+#####FAQ
+######1. What does the Store Listing option do?
+
+The Store Listing option does not escape single quotes with a `\`. This is done so that the text can be used on the Google Play Store Listing rather than a `strings.xml` file. Leaving this option unchecked will escape all single quotes so that they can be used as a `strings.xml` file.
+######2. Do I need to add string and item to the list of tags?
+Nope, string and item are already added by default. Just add your custom tags if any and whatever your `strings.xml` file needs translated.
 
 #####Things that need to be fixed/built
 1. A more fluid, sleek UI
 2. Simultaneous translations of multiple languages
 3. Direct downloads for the new strings.xml files
+4. Encoding for translation from non-English languages - error while trying to parse the XML files.
 
 #####Contributions
 
 If you'd like to contribute to the project, feel free to fork the project make your changes, commit them to a separate branch and then perform a pull request.
+
+Please make sure you run the source files through `pep8` before committing them.
 
 #####Licensing
 The project is licensed under the MIT License.

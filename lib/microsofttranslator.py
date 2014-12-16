@@ -1,22 +1,24 @@
 # -*- coding: utf-8 -*-
 
 """
-A big shoutout to openlabs for this wonderful script.
+    A big shoutout to openlabs for this wonderful script.
 
-This script is a modified version of the original.
-It was done so that no external libraries needed to be used to be deployed onto GAE.
+    This script is a modified version of the original.
+    It was done so that no external libraries needed to be used to be
+    deployed onto GAE.
 
-The original script can be found here -
-     https://github.com/openlabs/Microsoft-Translator-Python-API
+    The original script can be found here -
+        https://github.com/openlabs/Microsoft-Translator-Python-API
 
-Changes: 
-*Removed warnings and exception classes to get rid of the module `six`
-*Removed requests and replaced it with urllib, urllib2
-*Added detect_language
-*Added get_languages
+    Changes:
+        *Removed warnings, six and exception classes
+        *Replaced requests it with urllib, urllib2
+    Reason:
+        *To prevent addition of more third-party libraries.
 
-Editor: torcellite
-DoC: 12/15/2014
+
+    Editor: torcellite
+    DoC: 12/15/2014
 """
 
 
@@ -35,8 +37,8 @@ import json
 import urllib
 import urllib2
 
-from xml.dom import minidom
 from urllib2 import HTTPError
+
 
 class Translator(object):
     """Implements AJAX API for the Microsoft Translator service
@@ -45,8 +47,8 @@ class Translator(object):
     """
 
     def __init__(self, client_id, client_secret,
-            scope="http://api.microsofttranslator.com",
-            grant_type="client_credentials", app_id=None, debug=False):
+                 scope="http://api.microsofttranslator.com",
+                 grant_type="client_credentials", app_id=None, debug=False):
         """
 
 
@@ -69,6 +71,7 @@ class Translator(object):
         self.grant_type = grant_type
         self.access_token = None
         self.debug = debug
+        self.ajax_url = 'http://api.microsofttranslator.com/V2/Ajax.svc/'
 
     def get_access_token(self):
         """Bing AppID mechanism is deprecated and is no longer supported.
@@ -93,9 +96,11 @@ class Translator(object):
             'scope': self.scope,
             'grant_type': self.grant_type
         }
-        
+
         data = urllib.urlencode(args)
-        request = urllib2.Request('https://datamarket.accesscontrol.windows.net/v2/OAuth2-13', data)
+        request = urllib2.Request(
+            'https://datamarket.accesscontrol.windows.net/v2/OAuth2-13',
+            data)
 
         try:
             response = urllib2.urlopen(request)
@@ -107,65 +112,53 @@ class Translator(object):
 
     def call(self, url, params):
         """Calls the given url with the params urlencoded.
-        Encode data within the URL itself, since urllib2 makes a POST request if Request is used.
+        Encode data within the URL itself,
+        since urllib2 makes a POST request if Request is used.
         """
         if not self.access_token:
             self.access_token = self.get_access_token()
-        
-        url_values = urllib.urlencode(params)
-        full_url =  url + '?' + url_values
-        request = urllib2.Request(full_url, headers={'Authorization': 'Bearer %s' % self.access_token})
+        if params != '':
+            url_values = urllib.urlencode(params)
+            url = url + '?' + url_values
+        else:
+            url = url
+        url = self.ajax_url + url
+
+        request = urllib2.Request(
+            url,
+            headers={'Authorization': 'Bearer %s' % self.access_token})
         response = urllib2.urlopen(request)
         response = response.read().decode('UTF-8-sig')
-        
+
         rv = json.loads(response)
         return rv
 
     def get_languages(self):
         """Fetches the languages supported by Microsoft Translator
-        Returns list of languages
+           Returns list of languages
         """
         if not self.access_token:
             self.access_token = self.get_access_token()
 
-        request = urllib2.Request(
-            'http://api.microsofttranslator.com/V2/Http.svc/GetLanguagesForTranslate',
-            headers={'Authorization': 'Bearer %s' % self.access_token})
-        response = urllib2.urlopen(request)
+        params = ''
 
-        languages = []
-        xml = minidom.parseString(response.read().decode('UTF-8-sig'))
-        array = xml.firstChild
-        for childNode in array.childNodes:
-            languages.append(childNode.firstChild.nodeValue)
-        [language.encode('UTF-8') for language in languages]
-        return languages
+        return self.call('GetLanguagesForTranslate', params)
 
     def detect_language(self, text):
         """Detects language of given string
-        Returns two letter language - Example : fr
+           Returns two letter language - Example : fr
         """
         if not self.access_token:
             self.access_token = self.get_access_token()
 
-        params = {'text' : text}
-        url = 'http://api.microsofttranslator.com/V2/Ajax.svc/Detect'
-        url_values = urllib.urlencode(params)
-        full_url =  url + '?' + url_values
+        params = {
+            'text': text.encode('UTF-8')
+        }
 
-        request = urllib2.Request(
-            full_url,
-            headers={'Authorization': 'Bearer %s' % self.access_token})
-        response = urllib2.urlopen(request)
-
-        response = response.read().decode('UTF-8-sig')
-        language = response.split('\n')
-        language = [l for l in language if l is not None]
-        return language[0].encode('UTF-8')[1:-1]
-
+        return self.call('Detect', params)
 
     def translate(self, text, to_lang, from_lang=None,
-            content_type='text/plain', category='general'):
+                  content_type='text/plain', category='general'):
         """Translates a text string from one language to another.
 
         :param text: A string representing the text to translate.
@@ -189,9 +182,7 @@ class Translator(object):
         }
         if from_lang is not None:
             params['from'] = from_lang
-        return self.call(
-            "http://api.microsofttranslator.com/V2/Ajax.svc/Translate",
-            params)
+        return self.call("Translate", params)
 
     def translate_array(self, texts, to_lang, from_lang=None, **options):
         """Translates an array of text strings from one language to another.
@@ -231,6 +222,4 @@ class Translator(object):
         if from_lang is not None:
             params['from'] = from_lang
 
-        return self.call(
-                "http://api.microsofttranslator.com/V2/Ajax.svc/TranslateArray",
-                params)
+        return self.call("TranslateArray", params)
