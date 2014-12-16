@@ -1,60 +1,83 @@
 <!DOCTYPE html>
 {% autoescape true %}
 <html>
-  <!-- [START head_html] -->
-  <head>
-    <meta charset="utf-8">
-    <meta name="description" content="Android Application Translation | torcellite">
-    <script type="text/javascript">
-      function toggleDisclaimer() {
-        if(document.getElementById("disclaimer-content").style.display == 'none') {
-          document.getElementById("disclaimer-content").style.display = 'block'
-          document.getElementById("toggle").innerHTML = 'Hide';
-        } else {
-          document.getElementById("disclaimer-content").style.display = 'none'
-          document.getElementById("toggle").innerHTML = 'Show Disclaimer';
-        }
-      }
-    </script>
-    <link type="text/css" rel="stylesheet" href="/css/template.css"/>
-    <title>Android App Translation</title>
-  </head>
-  <!-- [END head_html] -->
-  <body>
-    <a href="https://github.com/torcellite/Android-Application-Translation"><img style="position: absolute; top: 0; right: 0; border: 0; z-index: 5;" src="https://camo.githubusercontent.com/e7bbb0521b397edbd5fe43e7f760759336b5e05f/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677265656e5f3030373230302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png"></a>
-    <div class="header">
-      <span class="title"><a href="/" style="text-decoration: none;">Android Application Translate</a></span>
-    </div>
-    <div class="content">
-    <div style="text-align: center;">
-      <button class="button" id="toggle" onclick="toggleDisclaimer();" style="
-        display: inline-block; margin: 8px;">Show Disclaimer</button>
-    </div>
-    <div class="disclaimer" style="margin-left:10%; margin-right:10%; margin-bottom: 0px;">
-      <div id="disclaimer-content" style="display: none;">
-        <h3 style="margin-left: 24px;">Disclaimer</h3>
-          <pre style="margin: 8px 24px 8px 24px;">The application translates XML data, namely strings.xml of Android applications and is licensed under the MIT license. Please feel free to look at the source code and modify it as you please. No copyright infringment (if any) was intended. No use of libraries which aren't Open Source or freemium were intended. If you are the creator of a library used here and I have not asked for permissiong to use it, please notify me to get things sorted out. You can reach me at <a href="mailto:karthik@torcellite.com">karthik@torcellite.com</a></pre>
-        <br/> <br/>
+   <!-- [START head_html] -->
+   <head>
+      <meta charset="utf-8">
+      <meta name="description" content="Android Application Translation | torcellite">
+      <script type="text/javascript">var switchTo5x=true;</script>
+      <script type="text/javascript" src="http://w.sharethis.com/button/buttons.js"></script>
+      <script type="text/javascript" src="http://s.sharethis.com/loader.js"></script>
+      <script type="text/javascript">
+         function toggleDisclaimer() {
+           if(document.getElementById("disclaimer-content").style.display == 'none') {
+             document.getElementById("disclaimer-content").style.display = 'block'
+             document.getElementById("toggle").innerHTML = 'Hide';
+           } else {
+             document.getElementById("disclaimer-content").style.display = 'none'
+             document.getElementById("toggle").innerHTML = 'Show Disclaimer';
+           }
+         }
+      </script>
+      <link type="text/css" rel="stylesheet" href="/css/template.css"/>
+      <title>Android App Translation</title>
+   </head>
+   <!-- [END head_html] -->
+   <body>
+      <a href="https://github.com/torcellite/Android-Application-Translation"><img style="position: absolute; top: 0; right: 0; border: 0; z-index: 5;" src="https://camo.githubusercontent.com/e7bbb0521b397edbd5fe43e7f760759336b5e05f/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677265656e5f3030373230302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png"></a>
+      <div class="header">
+         <span class="title"><a href="/" style="text-decoration: none;">Android Application Translate</a></span>
       </div>
-    </div> <br/> <br/> <br/>
-    <form action="/main" method="post">
-      <div style="width:80%; margin-left:10%; margin-right:10%;">
-        <div><pre>Don't have a Client ID &amp; Secret? Obtain one from <a href="http://blogs.msdn.com/b/translation/p/gettingstarted1.aspx" target="_blank">here</a>.<pre></div>Microsoft allows upto 2,000,000 free characters of translation.</pre><hr/>
-        <div style="text-align:center;">
-          <div><pre>Bing Translate API Client ID:</pre><br/><input id="id" name="client_id" type="text" style="width: 450px; display: inline-block;"></div>
-          <div><pre>Bing Translate API Client Secret:</pre><br/><input id="secret" name="client_secret" type="text" style="width: 450px; display: inline-block;"></div>
-          <br/><br/>
-          <div><input class="button" type="submit" value="Submit"></div>
-        </div>
+      <div class="content">
+      <div style="text-align: center;">
+         <button class="button" id="toggle" onclick="toggleDisclaimer();" style="
+            display: inline-block; margin: 8px;">Show Disclaimer</button>
       </div>
-    </form><br/> <br/> <br/> <br/>
-    <div class="footer">
-    <div>
-    <span>Licensed under the <a href="http://opensource.org/licenses/MIT" target="_blank">MIT license</a></span>
-    <div>
-    <div>
-    <span>Created by <a href="http://torcellite.com" target="_blank">torcellite</a></span>
-    <div>
-  </body>
+      <div class="disclaimer" style="margin-left:10%; margin-right:10%; margin-bottom: 0px;">
+         <div id="disclaimer-content" style="display: none;">
+            <h3 style="margin-left: 24px;">Disclaimer</h3>
+            <pre style="margin: 8px 24px 8px 24px;">The application translates XML data, namely strings.xml of Android applications and is licensed under the MIT license. Please feel free to look at the source code and modify it as you please. No copyright infringment (if any) was intended. No use of libraries which aren't Open Source or freemium were intended. If you are the creator of a library used here and I have not asked for permissiong to use it, please notify me to get things sorted out. You can reach me at <a href="mailto:karthik@torcellite.com">karthik@torcellite.com</a></pre>
+            <br/> <br/>
+         </div>
+      </div>
+      <br/> <br/> <br/>
+      <form action="/main" method="post">
+         <div style="width:80%; margin-left:10%; margin-right:10%;">
+            <div>
+               <pre>
+               Don't have a Client ID &amp; Secret? Obtain one from <a href="http://blogs.msdn.com/b/translation/p/gettingstarted1.aspx" target="_blank">here</a>.
+               <pre>
+            </div>
+            Microsoft allows upto 2,000,000 free characters of translation.</pre>
+            <hr/>
+            <div style="text-align:center;">
+               <div>
+                  <pre>Bing Translate API Client ID:</pre>
+                  <br/><input id="id" name="client_id" type="text" style="width: 450px; display: inline-block;">
+               </div>
+               <div>
+                  <pre>Bing Translate API Client Secret:</pre>
+                  <br/><input id="secret" name="client_secret" type="text" style="width: 450px; display: inline-block;">
+               </div>
+               <br/><br/>
+               <div><input class="button" type="submit" value="Submit"></div>
+            </div>
+         </div>
+      </form>
+      <br/> <br/> <br/> <br/>
+      <div class="footer">
+      <div>
+      <span>Licensed under the <a href="http://opensource.org/licenses/MIT" target="_blank">MIT license</a></span>
+      <div>
+      <div>
+      <span>Created by <a href="http://torcellite.com" target="_blank">torcellite</a></span>
+      <div>
+      <script type="text/javascript">stLight.options({publisher: "514f5e5d-3316-40a8-96cf-00ff1e509fec", doNotHash: false, doNotCopy: false, hashAddressBar: false});</script>
+      <script>
+         var options={ "publisher": "514f5e5d-3316-40a8-96cf-00ff1e509fec", "logo": { "visible": true, "url": "http://android-app-translation.appspot.com", "img": "http://torcellite.com/images/logo.png", "height": 40}, "ad": { "visible": false, "openDelay": "5", "closeDelay": "0"}, "livestream": { "domain": "", "type": "sharethis"}, "ticker": { "visible": false, "domain": "", "title": "", "type": "sharethis"}, "facebook": { "visible": false, "profile": "sharethis"}, "fblike": { "visible": true, "url": ""}, "twitter": { "visible": false, "user": "@torcellite"}, "twfollow": { "visible": false}, "custom": [{ "visible": false, "title": "Custom 1", "url": "", "img": "", "popup": false, "popupCustom": { "width": 300, "height": 250}}, { "visible": false, "title": "Custom 2", "url": "", "img": "", "popup": false, "popupCustom": { "width": 300, "height": 250}}, { "visible": false, "title": "Custom 3", "url": "", "img": "", "popup": false, "popupCustom": { "width": 300, "height": 250}}], "chicklets": { "items": ["facebook", "googleplus", "twitter", "linkedin", "email", "sharethis"]}};
+         var st_bar_widget = new sharethis.widgets.sharebar(options);
+             
+      </script>
+   </body>
 </html>
 {% endautoescape %}
