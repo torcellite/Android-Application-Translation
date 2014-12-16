@@ -21,7 +21,7 @@ JINJA_ENVIRONMENT = jinja2.Environment(
 client_id = 'client_id'
 client_secret = 'client_secret'
 
-debug = True
+debug = False
 
 
 """Get Client ID and Client Secret
